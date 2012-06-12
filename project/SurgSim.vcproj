@@ -199,6 +199,18 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Shader (Plain Text)"
+			>
+			<File
+				RelativePath="..\libs\graphics3D\media\opengl.frag"
+				>
+			</File>
+			<File
+				RelativePath="..\libs\graphics3D\media\opengl.vert"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="main.cpp"
 			>

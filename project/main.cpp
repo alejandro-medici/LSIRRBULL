@@ -89,7 +89,7 @@ int main()
 
 	// create device
 
-	device = createDevice(driverType, core::dimension2d<u32>(640, 480));
+	device = createDevice(driverType, core::dimension2d<u32>(1024, 600));
 
 	if (device == 0)
 		return 1; // could not create selected driver.
@@ -266,7 +266,7 @@ int main()
 
 	// add a nice skybox
 
-	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+	/*driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
 	smgr->addSkyBoxSceneNode(
 		driver->getTexture("irrlicht2_up.jpg"),
@@ -276,11 +276,78 @@ int main()
 		driver->getTexture("irrlicht2_ft.jpg"),
 		driver->getTexture("irrlicht2_bk.jpg"));
 
-	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);*/
+
+	// add light 1 (nearly red)
+	scene::ILightSceneNode* light1 =
+		smgr->addLightSceneNode(0, core::vector3df(0,75,75),
+		video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 800.0f);
+
+	light1->setDebugDataVisible ( scene::EDS_BBOX );
+	// add fly circle animator to light 1
+	scene::ISceneNodeAnimator* animLight =
+		smgr->createFlyCircleAnimator (core::vector3df(50,300,0),190.0f, -0.003f);
+	//light1->addAnimator(animLight);
+	animLight->drop();
+
+	// attach billboard to the light
+	scene::ISceneNode* bill =
+		smgr->addBillboardSceneNode(light1, core::dimension2d<f32>(60, 60));
+
+	bill->setMaterialFlag(video::EMF_LIGHTING, false);
+	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+	bill->setMaterialTexture(0, driver->getTexture("particlered.bmp"));
+
+	// add light 2 (gray)
+	/*scene::ISceneNode* light2 =
+		smgr->addLightSceneNode(0, core::vector3df(0,75,75),
+		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
+
+	// add fly circle animator to light 2
+	anim = smgr->createFlyCircleAnimator(core::vector3df(0,150,0), 200.0f,
+		0.001f, core::vector3df(0.2f, 0.9f, 0.f));
+//	light2->addAnimator(anim);
+	anim->drop();
+
+	// attach billboard to light
+	bill = smgr->addBillboardSceneNode(light2, core::dimension2d<f32>(120, 120));
+	bill->setMaterialFlag(video::EMF_LIGHTING, false);
+	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+	bill->setMaterialTexture(0, driver->getTexture("particlewhite.bmp"));
+
+	// add particle system
+	scene::IParticleSystemSceneNode* ps =
+		smgr->addParticleSystemSceneNode(false, light2);
+
+	// create and set emitter
+	scene::IParticleEmitter* em = ps->createBoxEmitter(
+		core::aabbox3d<f32>(-3,0,-3,3,1,3),
+		core::vector3df(0.0f,0.03f,0.0f),
+		80,100,
+		video::SColor(0,255,255,255), video::SColor(0,255,255,255),
+		400,1100);
+	em->setMinStartSize(core::dimension2d<f32>(30.0f, 40.0f));
+	em->setMaxStartSize(core::dimension2d<f32>(30.0f, 40.0f));
+
+	ps->setEmitter(em);
+	em->drop();
+
+	// create and set affector
+	scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+	ps->addAffector(paf);
+	paf->drop();
+
+	// adjust some material settings
+	ps->setMaterialFlag(video::EMF_LIGHTING, false);
+	ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, driver->getTexture("fireball.bmp"));
+	ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);*/
 
 	// add a camera and disable the mouse cursor
 
-	scene::ICameraSceneNode* cam = smgr->addCameraSceneNodeFPS();
+	scene::ICameraSceneNode* cam = smgr->addCameraSceneNodeFPS();// addCameraSceneNodeFPS();
 	cam->setPosition(core::vector3df(-100,50,100));
 	cam->setTarget(core::vector3df(0,0,0));
 	device->getCursorControl()->setVisible(false);
