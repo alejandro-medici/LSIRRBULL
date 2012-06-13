@@ -300,7 +300,7 @@ int main()
 	bill->setMaterialTexture(0, driver->getTexture("particlered.bmp"));
 
 	// add light 2 (gray)
-	/*scene::ISceneNode* light2 =
+	scene::ISceneNode* light2 =
 		smgr->addLightSceneNode(0, core::vector3df(0,75,75),
 		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
 
@@ -343,7 +343,7 @@ int main()
 	ps->setMaterialFlag(video::EMF_LIGHTING, false);
 	ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 	ps->setMaterialTexture(0, driver->getTexture("fireball.bmp"));
-	ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);*/
+	ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);
 
 	// add a camera and disable the mouse cursor
 
