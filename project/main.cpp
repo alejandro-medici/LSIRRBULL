@@ -2,6 +2,8 @@
 #include <iostream>
 #include "driverChoice.h"
 
+#include "Laser.h"
+
 using namespace irr;
 
 #ifdef _MSC_VER
@@ -31,6 +33,10 @@ the variable name as parameter instead of the register index.
 
 IrrlichtDevice* device = 0;
 bool UseHighLevelShaders = false;
+
+s32 newMaterialType1 = 0;
+s32 newMaterialType2 = 0;
+s32 newMaterialBloomType = 0;
 
 class MyShaderCallBack : public video::IShaderConstantSetCallBack
 {
@@ -113,11 +119,13 @@ int main()
 
 	io::path vsFileName; // filename for the vertex shader
 	io::path psFileName; // filename for the pixel shader
+	io::path psBloomFileName; // filename for the pixel shader
 
 	switch(driverType)
 	{
 	case video::EDT_OPENGL:
 		{
+			psBloomFileName = "bloom.frag";
 			psFileName = "opengl.frag";
 			vsFileName = "opengl.vert";
 		}
@@ -179,8 +187,7 @@ int main()
 	// create materials
 
 	video::IGPUProgrammingServices* gpu = driver->getGPUProgrammingServices();
-	s32 newMaterialType1 = 0;
-	s32 newMaterialType2 = 0;
+
 
 	if (gpu)
 	{
@@ -197,6 +204,12 @@ int main()
 				vsFileName, "vertexMain", video::EVST_VS_1_1,
 				psFileName, "pixelMain", video::EPST_PS_1_1,
 				mc, video::EMT_TRANSPARENT_ADD_COLOR);
+
+			newMaterialBloomType  = gpu->addHighLevelShaderMaterialFromFiles(
+				vsFileName, "vertexMain", video::EVST_VS_1_1,
+				psBloomFileName, "pixelMain", video::EPST_PS_1_1,
+				mc, video::EMT_TRANSPARENT_ADD_COLOR);
+
 		mc->drop();
 	}
 
@@ -209,20 +222,20 @@ int main()
 
 	// create test scene node 1, with the new created material type 1
 
-	scene::ISceneNode* node = smgr->addCubeSceneNode(50);
-	node->setPosition(core::vector3df(0,0,0));
-	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
-	node->setMaterialFlag(video::EMF_LIGHTING, false);
-	node->setMaterialType((video::E_MATERIAL_TYPE)newMaterialType1);
-
-	smgr->addTextSceneNode(gui->getBuiltInFont(),
-			L"PS & VS & EMT_SOLID",
-			video::SColor(255,255,255,255),	node);
-
-	scene::ISceneNodeAnimator* anim = smgr->createRotationAnimator(
-			core::vector3df(0,0.3f,0));
-	node->addAnimator(anim);
-	anim->drop();
+// 	scene::ISceneNode* node = smgr->addCubeSceneNode(50);
+// 	node->setPosition(core::vector3df(0,0,0));
+// 	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
+// 	node->setMaterialFlag(video::EMF_LIGHTING, false);
+// 	node->setMaterialType((video::E_MATERIAL_TYPE)newMaterialType1);
+// 
+// 	smgr->addTextSceneNode(gui->getBuiltInFont(),
+// 			L"PS & VS & EMT_SOLID",
+// 			video::SColor(255,255,255,255),	node);
+// 
+// 	scene::ISceneNodeAnimator* anim = smgr->createRotationAnimator(
+// 			core::vector3df(0,0.3f,0));
+// 	node->addAnimator(anim);
+// 	anim->drop();
 
 	/*
 	Same for the second cube, but with the second material we created.
@@ -230,19 +243,19 @@ int main()
 
 	// create test scene node 2, with the new created material type 2
 
-	node = smgr->addCubeSceneNode(50);
-	node->setPosition(core::vector3df(0,-10,50));
-	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
-	node->setMaterialFlag(video::EMF_LIGHTING, false);
-	node->setMaterialType((video::E_MATERIAL_TYPE)newMaterialType2);
-
-	smgr->addTextSceneNode(gui->getBuiltInFont(),
-			L"PS & VS & EMT_TRANSPARENT",
-			video::SColor(255,255,255,255),	node);
-
-	anim = smgr->createRotationAnimator(core::vector3df(0,0.3f,0));
-	node->addAnimator(anim);
-	anim->drop();
+// 	node = smgr->addCubeSceneNode(50);
+// 	node->setPosition(core::vector3df(0,-10,50));
+// 	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
+// 	node->setMaterialFlag(video::EMF_LIGHTING, false);
+// 	node->setMaterialType((video::E_MATERIAL_TYPE)newMaterialType2);
+// 
+// 	smgr->addTextSceneNode(gui->getBuiltInFont(),
+// 			L"PS & VS & EMT_TRANSPARENT",
+// 			video::SColor(255,255,255,255),	node);
+// 
+// 	anim = smgr->createRotationAnimator(core::vector3df(0,0.3f,0));
+// 	node->addAnimator(anim);
+// 	anim->drop();
 
 	/*
 	Then we add a third cube without a shader on it, to be able to compare
@@ -251,12 +264,12 @@ int main()
 
 	// add a scene node with no shader
 
-	node = smgr->addCubeSceneNode(50);
-	node->setPosition(core::vector3df(0,50,25));
-	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
-	node->setMaterialFlag(video::EMF_LIGHTING, false);
-	smgr->addTextSceneNode(gui->getBuiltInFont(), L"NO SHADER",
-		video::SColor(255,255,255,255), node);
+// 	node = smgr->addCubeSceneNode(50);
+// 	node->setPosition(core::vector3df(0,50,25));
+// 	node->setMaterialTexture(0, driver->getTexture("wall.bmp"));
+// 	node->setMaterialFlag(video::EMF_LIGHTING, false);
+// 	smgr->addTextSceneNode(gui->getBuiltInFont(), L"NO SHADER",
+// 		video::SColor(255,255,255,255), node);
 
 	/*
 	And last, we add a skybox and a user controlled camera to the scene.
@@ -266,91 +279,50 @@ int main()
 
 	// add a nice skybox
 
-	/*driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+// 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+// 
+// 	smgr->addSkyBoxSceneNode(
+// 		driver->getTexture("irrlicht2_up.jpg"),
+// 		driver->getTexture("irrlicht2_dn.jpg"),
+// 		driver->getTexture("irrlicht2_lf.jpg"),
+// 		driver->getTexture("irrlicht2_rt.jpg"),
+// 		driver->getTexture("irrlicht2_ft.jpg"),
+// 		driver->getTexture("irrlicht2_bk.jpg"));
+// 
+// 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
 
-	smgr->addSkyBoxSceneNode(
-		driver->getTexture("irrlicht2_up.jpg"),
-		driver->getTexture("irrlicht2_dn.jpg"),
-		driver->getTexture("irrlicht2_lf.jpg"),
-		driver->getTexture("irrlicht2_rt.jpg"),
-		driver->getTexture("irrlicht2_ft.jpg"),
-		driver->getTexture("irrlicht2_bk.jpg"));
-
-	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);*/
-
-	// add light 1 (nearly red)
-	scene::ILightSceneNode* light1 =
-		smgr->addLightSceneNode(0, core::vector3df(0,75,75),
-		video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 800.0f);
-
-	light1->setDebugDataVisible ( scene::EDS_BBOX );
-	// add fly circle animator to light 1
-	scene::ISceneNodeAnimator* animLight =
-		smgr->createFlyCircleAnimator (core::vector3df(50,300,0),190.0f, -0.003f);
-	//light1->addAnimator(animLight);
-	animLight->drop();
-
-	// attach billboard to the light
-	scene::ISceneNode* bill =
-		smgr->addBillboardSceneNode(light1, core::dimension2d<f32>(60, 60));
-
-	bill->setMaterialFlag(video::EMF_LIGHTING, false);
-	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialTexture(0, driver->getTexture("particlered.bmp"));
-
-	// add light 2 (gray)
-	scene::ISceneNode* light2 =
-		smgr->addLightSceneNode(0, core::vector3df(0,75,75),
-		video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
-
-	// add fly circle animator to light 2
-	anim = smgr->createFlyCircleAnimator(core::vector3df(0,150,0), 200.0f,
-		0.001f, core::vector3df(0.2f, 0.9f, 0.f));
-//	light2->addAnimator(anim);
-	anim->drop();
-
-	// attach billboard to light
-	bill = smgr->addBillboardSceneNode(light2, core::dimension2d<f32>(120, 120));
-	bill->setMaterialFlag(video::EMF_LIGHTING, false);
-	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-	bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	bill->setMaterialTexture(0, driver->getTexture("particlewhite.bmp"));
-
-	// add particle system
-	scene::IParticleSystemSceneNode* ps =
-		smgr->addParticleSystemSceneNode(false, light2);
-
-	// create and set emitter
-	scene::IParticleEmitter* em = ps->createBoxEmitter(
-		core::aabbox3d<f32>(-3,0,-3,3,1,3),
-		core::vector3df(0.0f,0.03f,0.0f),
-		80,100,
-		video::SColor(0,255,255,255), video::SColor(0,255,255,255),
-		400,1100);
-	em->setMinStartSize(core::dimension2d<f32>(30.0f, 40.0f));
-	em->setMaxStartSize(core::dimension2d<f32>(30.0f, 40.0f));
-
-	ps->setEmitter(em);
-	em->drop();
-
-	// create and set affector
-	scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
-	ps->addAffector(paf);
-	paf->drop();
-
-	// adjust some material settings
-	ps->setMaterialFlag(video::EMF_LIGHTING, false);
-	ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-	ps->setMaterialTexture(0, driver->getTexture("fireball.bmp"));
-	ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);
-
+	
 	// add a camera and disable the mouse cursor
 
-	scene::ICameraSceneNode* cam = smgr->addCameraSceneNodeFPS();// addCameraSceneNodeFPS();
-	cam->setPosition(core::vector3df(-100,50,100));
+	scene::ICameraSceneNode* cam = smgr->addCameraSceneNode();// addCameraSceneNodeFPS();
+	cam->setPosition(core::vector3df(-100,0,100));
 	cam->setTarget(core::vector3df(0,0,0));
 	device->getCursorControl()->setVisible(false);
+
+	scene::ISceneNode* bill = smgr->addBillboardSceneNode(0
+		, core::dimension2d<f32>(256, 150));
+	bill->setPosition(core::vector3df(-35,0,35)); // 1 , -0.5 , -1
+	bill->setMaterialFlag(video::EMF_LIGHTING, false);
+	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+	bill->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+	bill->setMaterialTexture(0, driver->getTexture("cameraView.png"));
+	
+	Laser* LaserBeamLumiia = new Laser(0, smgr);
+
+	device->setEventReceiver(LaserBeamLumiia);
+
+
+	//////////////////////////////////////////////////////////////////////////
+	bill = smgr->addBillboardSceneNode(0
+		, core::dimension2d<f32>(512, 600));
+	bill->setPosition(core::vector3df(35,0,-35)); // 1 , -0.5 , -1
+	bill->setMaterialFlag(video::EMF_LIGHTING, true);
+	bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+	bill->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+	bill->setMaterialTexture(0, driver->getTexture("0.jpg"));
+
+
+	//////////////////////////////////////////////////////////////////////////
 
 	/*
 	Now draw everything. That's all.
@@ -384,7 +356,3 @@ int main()
 	return 0;
 }
 
-/*
-Compile and run this, and I hope you have fun with your new little shader
-writing tool :).
-**/

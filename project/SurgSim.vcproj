@@ -203,6 +203,10 @@
 			Name="Shader (Plain Text)"
 			>
 			<File
+				RelativePath="..\libs\graphics3D\media\bloom.frag"
+				>
+			</File>
+			<File
 				RelativePath="..\libs\graphics3D\media\opengl.frag"
 				>
 			</File>
@@ -211,6 +215,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Laser.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Laser.h"
+			>
+		</File>
 		<File
 			RelativePath="main.cpp"
 			>
