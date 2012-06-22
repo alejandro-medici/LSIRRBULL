@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\libs\graphics3D\include"
+				AdditionalIncludeDirectories="..\libs\graphics3D\include;..\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -216,11 +216,11 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\Laser.cpp"
+			RelativePath="..\src\Laser.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Laser.h"
+			RelativePath="..\src\Laser.h"
 			>
 		</File>
 		<File

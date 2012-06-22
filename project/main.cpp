@@ -330,11 +330,20 @@ int main()
 
 	int lastFPS = -1;
 
+	gui::IGUIFont* font = device->getGUIEnvironment()->getBuiltInFont();
+
 	while(device->run())
 		if (device->isWindowActive())
 	{
 		driver->beginScene(true, true, video::SColor(255,0,0,0));
 		smgr->drawAll();
+		// draw some text
+		if (font)
+		{
+			font->draw(L" Power:100W \n Bandwidht pulse: 5 ms  \n Frequency: 1 Hz",
+			core::rect<s32>(130,10,300,50),
+			video::SColor(255,255,255,255));
+		}
 		driver->endScene();
 
 		int fps = driver->getFPS();
